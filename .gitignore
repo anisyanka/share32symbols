@@ -1,0 +1,11 @@
+*.o
+*.a
+*.exe
+*.dll
+*.so
+venv/
+build/
+*__pycache__/
+*.pyc
+*.vscode/
+server.secret
