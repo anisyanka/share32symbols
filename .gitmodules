@@ -1,0 +1,3 @@
+[submodule "fw/Libraries/STM32CubeF1"]
+	path = fw/Libraries/STM32CubeF1
+	url = https://github.com/STMicroelectronics/STM32CubeF1.git
