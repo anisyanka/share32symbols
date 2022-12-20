@@ -9,3 +9,4 @@ build/
 *.pyc
 *.vscode/
 server.secret
+.DS_Store
