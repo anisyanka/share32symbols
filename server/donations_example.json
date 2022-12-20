@@ -1,0 +1,58 @@
+
+{
+    "__COMMENT": "IT IS TEST DONATION"
+	"id": 107984734,
+	"alert_type": "1",
+	"is_shown": "0",
+	"additional_data": {
+        "randomness":812
+        },
+	"billing_system": "fake",
+	"billing_system_type": None,
+	"username": "Mihg",
+	"amount": "134.00",
+	"amount_formatted": "134",
+	"amount_main": 134,
+	"currency": "RUB",
+	"message": "migasfv",
+	"header": "",
+	"date_created": "2022-12-20 11:30:23",
+	"emotes": None,
+	"ap_id": None,
+	"_is_test_alert": True,
+	"message_type": "text",
+	"preset_id": 0
+}
+
+
+{
+    "__COMMENT": "IT IS A REAL DONATION"
+	"id": 107984810,
+	"alert_type": 1,
+	"is_shown": 0,
+	"additional_data": {
+		"randomness":954,
+		"is_commission_covered":0,
+		"payer_data": {
+			"id":"113032333206888269489",
+			"code":"anisyanka",
+			"service":"youtube",
+			"url":"https:\\/\\/www.youtube.com\\/channel\\/UCZdSmuC-fJlKYwl6WK8KbFg"
+			}
+		},
+	"billing_system": "moneymailru",
+	"billing_system_type": "bankCardRub",
+	"username": "Anisyanka",
+	"amount": 1,
+	"amount_formatted": "1",
+	"amount_main": 1,
+	"currency": "RUB",
+	"message": "удачи",
+	"date_created": "2022-12-20 11:33:07",
+	"emotes": None,
+	"ap_id": 300545492,
+	"_is_test_alert": False,
+	"message_type": "text",
+	"preset_id": None,
+	"asr_text": None
+}
