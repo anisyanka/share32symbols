@@ -10,3 +10,4 @@ build/
 *.vscode/
 server.secret
 .DS_Store
+failed_donations.json
