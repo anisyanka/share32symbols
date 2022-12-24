@@ -3,6 +3,7 @@ import json
 import time
 import queue
 import serial
+from serial import SerialException
 from donation_alert import DA_Alert
 from dataclasses import dataclass
 
@@ -87,6 +88,8 @@ def send_oled_data(oled_msg):
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
 		s.close()
 
+	except SerialException as sererr:
+		print("[ERROR]: ", sererr)
 	except OSError as oserr:
 		print("[ERROR]: ", oserr)
 	except ValueError as valerr:
