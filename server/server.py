@@ -114,9 +114,6 @@ while True:
 
 	if is_sleep_need == True:
 		time.sleep(item.lifetime)
+		print("Lifetime exceeded")
 
-	if q.empty() == True:
-		print("QUEUE IS EMPTY") # clear OLED with default lines
-	else:
-		print("QUEUE IS NOT EMPTY")
 	q.task_done()
