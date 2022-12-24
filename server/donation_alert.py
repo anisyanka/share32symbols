@@ -9,7 +9,8 @@ from typing import Any
 class DA_DonationEvent:
 
 	username: str
-	amount_formatted: str
+	amount: str
+	amount_main: str
 	currency: str
 	message: str
 
@@ -33,7 +34,8 @@ class DA_Alert:
 				function(
 					DA_DonationEvent(
 						data["username"],
-						data["amount_formatted"],
+						data["amount"],
+						data["amount_main"],
 						data["currency"],
 						data["message"]
 					)

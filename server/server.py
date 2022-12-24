@@ -22,7 +22,8 @@ class OLED_Message:
 	line1: str # 16 symbols for line 1
 	line2: str # 16 symbols for line 2
 	lifetime: int # time in sec in during which the lines will be displayed
-	currency: str
+	currency: str # currency of a donation
+	rubles: str # used to save failed donation
 
 # Get secret token
 with open('server.secret', 'r') as file:
@@ -32,7 +33,7 @@ with open('server.secret', 'r') as file:
 alert = DA_Alert(data["user_token"])
 @alert.event()
 def handler(event):
-	print(f'[NEW DONATION]\nUser:{event.username}\nValue:{event.amount_formatted}\nCurrency:{event.currency}\nMessage:{event.message}\n')
+	print(f'[NEW DONATION]\nUser:{event.username}\nValue:{event.amount}\nCurrency:{event.currency}\nMessage:{event.message}\n')
 
 	if event.currency != 'RUB':
 		pass # convert currency to RUB
@@ -41,14 +42,20 @@ def handler(event):
 	line1 = event.message[:16]
 	line2 = event.message[16:32]
 	currency = event.currency
+	rubles = event.amount
 
-	if int(event.amount_formatted) < MIN_DONATE_IN_RUB_TO_INCREASE_TIME:
-		lifetime = DEFAULT_LIFETIME_SEC
-	else:
-		# so many rubles, so many seconds on OLED
-		lifetime = int(event.amount_formatted)
+	try:
+		if int(event.amount_main) < MIN_DONATE_IN_RUB_TO_INCREASE_TIME:
+			lifetime = DEFAULT_LIFETIME_SEC
+		else:
+			# so many rubles, so many seconds on OLED
+			lifetime = int(event.amount_main)
+	except ValueError:
+		print("[ERROR]: can't convert received string to int value")
+		put_msg_to_errfile(OLED_Message(username, line1, line2, 0, currency, rubles))
+		return
 
-	q.put(OLED_Message(username, line1, line2, lifetime, currency))
+	q.put(OLED_Message(username, line1, line2, lifetime, currency, rubles))
 
 def put_msg_to_errfile(oled_msg):
 	# save failed_donations.json
@@ -57,7 +64,8 @@ def put_msg_to_errfile(oled_msg):
 		"line1": oled_msg.line1,
 		"line2": oled_msg.line2,
 		"currency": oled_msg.currency,
-		"lifetime": oled_msg.lifetime
+		"lifetime": oled_msg.lifetime,
+		"rubles": oled_msg.rubles
 	}
 
 	with open("failed_donations.json", "a") as file:
@@ -73,7 +81,8 @@ def send_oled_data(oled_msg):
 		print("Sending data to port named: " + s.name)
 
 		if s.is_open == True:
-			s.write("1." + oled_msg.line1 + "2." + oled_msg.line2)
+			to_oled = "1." + oled_msg.line1 + "2." + oled_msg.line2
+			s.write(bytes(to_oled,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
 		s.close()
