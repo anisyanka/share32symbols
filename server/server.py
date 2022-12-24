@@ -9,7 +9,7 @@ from dataclasses import dataclass
 SERIAL_PORT = '/dev/tty.usbmodem48F256B635381'
 DEFAULT_LIFETIME_SEC = 10 # A message will be displayed on OLED during these seconds
 MIN_DONATE_IN_RUB_TO_INCREASE_TIME = 10
-OLED_DEVICE_MAX_ANS_BYTES = 4
+OLED_DEVICE_MAX_ANS_BYTES = 2
 WRITE_ATTEMPTS = 5
 
 # The queue of OLED messages
@@ -33,7 +33,7 @@ with open('server.secret', 'r') as file:
 alert = DA_Alert(data["user_token"])
 @alert.event()
 def handler(event):
-	print(f'[NEW DONATION]\nUser:{event.username}\nValue:{event.amount}\nCurrency:{event.currency}\nMessage:{event.message}\n')
+	print(f'\n\n[NEW DONATION]\nUser:{event.username}\nValue:{event.amount}\nCurrency:{event.currency}\nMessage:{event.message}')
 
 	if event.currency != 'RUB':
 		pass # convert currency to RUB
@@ -102,8 +102,9 @@ while True:
 	print(f'Working on: {item}')
 
 	for i in range(0, WRITE_ATTEMPTS):
-		if (send_oled_data(item) == "OK"):
+		if (send_oled_data(item) == b'OK'):
 			is_sleep_need = True
+			print("SUCCESS")
 			break
 		else:
 			print(f'[ERROR]: can not send these data to OLED:\n1: {item.line1}\n2: {item.line2}\nAttempts №{i + 1}')
