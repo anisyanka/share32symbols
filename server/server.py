@@ -10,8 +10,9 @@ from dataclasses import dataclass
 SERIAL_PORT = '/dev/tty.usbmodem48F256B635381'
 DEFAULT_LIFETIME_SEC = 10 # A message will be displayed on OLED during these seconds
 MIN_DONATE_IN_RUB_TO_INCREASE_TIME = 10
-OLED_DEVICE_MAX_ANS_BYTES = 2
+OLED_DEVICE_MAX_ANS_BYTES = 3
 WRITE_ATTEMPTS = 5
+END_OF_MASSAGE_SYMBOL = '\r'
 
 # The queue of OLED messages
 q = queue.Queue()
@@ -82,7 +83,7 @@ def send_oled_data(oled_msg):
 		print("Sending data to port named: " + s.name)
 
 		if s.is_open == True:
-			to_oled = "1." + oled_msg.line1 + "2." + oled_msg.line2
+			to_oled = "1." + oled_msg.line1 + "2." + oled_msg.line2 + END_OF_MASSAGE_SYMBOL
 			s.write(bytes(to_oled,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
@@ -105,7 +106,7 @@ while True:
 	print(f'Working on: {item}')
 
 	for i in range(0, WRITE_ATTEMPTS):
-		if (send_oled_data(item) == b'OK'):
+		if (send_oled_data(item) == b'OK\r'):
 			is_sleep_need = True
 			print("SUCCESS")
 			break
