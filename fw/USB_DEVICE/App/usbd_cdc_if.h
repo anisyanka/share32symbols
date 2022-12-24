@@ -7,9 +7,12 @@
 
 #include "usbd_cdc.h"
 
+#define APP_END_OF_MESSAGE_SYMBOL '\r'
+#define APP_USER_RX_BUFFER_SIZE 128
+
 /* Define size for the receive and transmit buffer over CDC */
-#define APP_RX_DATA_SIZE  1024
-#define APP_TX_DATA_SIZE  1024
+#define APP_RX_DATA_SIZE  256
+#define APP_TX_DATA_SIZE  256
 
 /** CDC Interface callback. */
 extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;

@@ -1,4 +1,5 @@
 #include "usbd_cdc_if.h"
+#include <stdbool.h>
 
 /* Create buffer for reception and transmission           */
 /* It's up to user to redefine and/or remove those define */
@@ -9,6 +10,9 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
+extern bool is_package_received;
+extern uint8_t user_rx_buffer[APP_USER_RX_BUFFER_SIZE];
+extern uint8_t err_ans[];
 
 static int8_t CDC_Init_FS(void);
 static int8_t CDC_DeInit_FS(void);
@@ -124,6 +128,20 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
+	if (*Len <= APP_USER_RX_BUFFER_SIZE)
+	{
+		for (uint32_t i = 0; i < *Len; i++)
+		{
+			user_rx_buffer[i] = Buf[i];
+		}
+
+		is_package_received = true;
+	}
+	else
+	{
+		CDC_Transmit_FS(err_ans, 3);
+	}
+
 	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
 	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 	return (USBD_OK);

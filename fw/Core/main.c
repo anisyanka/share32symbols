@@ -2,6 +2,16 @@
 #include "main.h"
 #include "init.h"
 #include "usb_device.h"
+#include "usbd_cdc_if.h"
+
+#include <stdbool.h>
+
+uint8_t ok_ans[] = { 'O', 'K', APP_END_OF_MESSAGE_SYMBOL };
+uint8_t err_ans[] = { 'N', 'O', APP_END_OF_MESSAGE_SYMBOL };
+char oled_line1[16] = { 0 };
+char oled_line2[16] = { 0 };
+bool is_package_received = false;
+uint8_t user_rx_buffer[APP_USER_RX_BUFFER_SIZE] = { 0 };
 
 int main(void)
 {
@@ -13,6 +23,13 @@ int main(void)
 
 	while (1)
 	{
+		if (is_package_received)
+		{
+			is_package_received = false;
+
+			// update OLED text
+			CDC_Transmit_FS(ok_ans, sizeof(ok_ans));
+		}
 	}
 }
 
