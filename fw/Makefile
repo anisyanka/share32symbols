@@ -36,7 +36,8 @@ Core/system_stm32f1xx.c \
 Libraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
 Libraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
 Libraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
-Libraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c  
+Libraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c \
+Libraries/ws0010/ws0010.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -101,7 +102,8 @@ C_INCLUDES =  \
 -ILibraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc \
 -ILibraries/STM32CubeF1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc \
 -ILibraries/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include \
--ILibraries/STM32CubeF1/Drivers/CMSIS/Include
+-ILibraries/STM32CubeF1/Drivers/CMSIS/Include \
+-ILibraries/ws0010
 
 
 # compile gcc flags
