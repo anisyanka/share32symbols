@@ -87,6 +87,7 @@ def send_oled_data(oled_msg):
 			s.write(bytes(to_oled,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
+			print(f'OLED device ans: {ans}')
 		s.close()
 
 	except SerialException as sererr:
