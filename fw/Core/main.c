@@ -83,7 +83,7 @@ int main(void)
 	oled_ll_func.reset_e = oled_reset_e;
 
 	char line1[] = "Share 32 symbols";
-	char line2[] = "----------------";
+	char line2[] = "    *(^-^)*     ";
 
 	ws0010_init(&oled_dev);
 
