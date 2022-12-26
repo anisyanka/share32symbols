@@ -83,7 +83,9 @@ def send_oled_data(oled_msg):
 
 		if s.is_open == True:
 			to_oled = oled_msg.line1 + DELIMITER_SYMBOL + oled_msg.line2
-			print(f"Sending data <{to_oled}> to port named: {s.name}")
+			print(f"Sending data <{to_oled}> to port named: {s.name}\n")
+			print(f"LINE1: {oled_msg.line1.encode('utf-8')}")
+			print(f"LINE2: {oled_msg.line2.encode('utf-8')}")
 			s.write(bytes(to_oled,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
