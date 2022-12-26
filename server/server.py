@@ -101,6 +101,14 @@ def send_oled_data(oled_msg):
 
 	return ans
 
+def print_default_text():
+	line1_def_text = "Share 32 symbols"
+	line2_def_text = "    *(^-^)*    "
+
+	send_oled_data(OLED_Message("no", line1_def_text, line2_def_text, 1, "no", "no"))
+
+print_default_text()
+
 # Dispatcher OLED messages
 while True:
 	is_sleep_need = True
@@ -124,6 +132,6 @@ while True:
 		print("Lifetime exceeded")
 
 		if q.empty() == True:
-			send_oled_data(OLED_Message("no", "Share 32 symbols", "----------------", 1, "no", "no"))
+			print_default_text()
 
 	q.task_done()
