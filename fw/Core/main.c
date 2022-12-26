@@ -28,7 +28,7 @@ ws0010_dev_t oled_dev = {
 static void oled_delay_us(uint32_t)
 {
 	/* HARDCODE */
-	HAL_Delay(50);
+	HAL_Delay(5);
 }
 
 static void oled_out_bits(uint8_t value)
@@ -83,7 +83,16 @@ int main(void)
 	oled_ll_func.set_e = oled_set_e;
 	oled_ll_func.reset_e = oled_reset_e;
 
+	char line1[] = "Share 32 symbols";
+	char line2[] = "----------------";
+
 	ws0010_init(&oled_dev);
+
+	ws0010_set_ddram_addr(&oled_dev, 0);
+	ws0010_print(&oled_dev, line1, sizeof(line1) - 1);
+
+	ws0010_set_ddram_addr(&oled_dev, 0x40);
+	ws0010_print(&oled_dev, line2, sizeof(line2) - 1);
 
 	while (1)
 	{
