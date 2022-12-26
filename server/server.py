@@ -120,5 +120,6 @@ while True:
 	if is_sleep_need == True:
 		time.sleep(item.lifetime)
 		print("Lifetime exceeded")
+		send_oled_data(OLED_Message("no", "Share 32 symbols", "----------------", 1, "no", "no"))
 
 	q.task_done()
