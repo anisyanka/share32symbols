@@ -1,4 +1,3 @@
-
 #include "main.h"
 #include "init.h"
 #include "usb_device.h"
@@ -10,8 +9,6 @@
 
 uint8_t ok_ans[] = { 'O', 'K' };
 uint8_t err_ans[] = { 'N', 'O' };
-char oled_line1[16] = { 0 };
-char oled_line2[16] = { 0 };
 bool is_package_received = false;
 uint8_t user_rx_buffer[APP_USER_RX_BUFFER_SIZE] = { 0 };
 uint32_t rx_len = 0;
