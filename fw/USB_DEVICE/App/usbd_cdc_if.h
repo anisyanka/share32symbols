@@ -7,7 +7,7 @@
 
 #include "usbd_cdc.h"
 
-#define APP_END_OF_MESSAGE_SYMBOL '\r'
+#define APP_OLED_LINE_DELIMITER '\0'
 #define APP_USER_RX_BUFFER_SIZE 128
 
 /* Define size for the receive and transmit buffer over CDC */

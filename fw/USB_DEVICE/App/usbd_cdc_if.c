@@ -12,6 +12,7 @@ uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 extern USBD_HandleTypeDef hUsbDeviceFS;
 extern bool is_package_received;
 extern uint8_t user_rx_buffer[APP_USER_RX_BUFFER_SIZE];
+extern uint32_t rx_len;
 extern uint8_t err_ans[];
 
 static int8_t CDC_Init_FS(void);
@@ -130,6 +131,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
 	if (*Len <= APP_USER_RX_BUFFER_SIZE)
 	{
+		rx_len = *Len;
 		for (uint32_t i = 0; i < *Len; i++)
 		{
 			user_rx_buffer[i] = Buf[i];

@@ -5,14 +5,16 @@
 #include "usbd_cdc_if.h"
 #include "ws0010.h"
 
+#include <stdio.h>
 #include <stdbool.h>
 
-uint8_t ok_ans[] = { 'O', 'K', APP_END_OF_MESSAGE_SYMBOL };
-uint8_t err_ans[] = { 'N', 'O', APP_END_OF_MESSAGE_SYMBOL };
+uint8_t ok_ans[] = { 'O', 'K' };
+uint8_t err_ans[] = { 'N', 'O' };
 char oled_line1[16] = { 0 };
 char oled_line2[16] = { 0 };
 bool is_package_received = false;
 uint8_t user_rx_buffer[APP_USER_RX_BUFFER_SIZE] = { 0 };
+uint32_t rx_len = 0;
 
 ws0010_ll_t oled_ll_func = { 0 };
 ws0010_dev_t oled_dev = {
@@ -99,9 +101,44 @@ int main(void)
 		if (is_package_received)
 		{
 			is_package_received = false;
-
-			// update OLED text
 			CDC_Transmit_FS(ok_ans, sizeof(ok_ans));
+
+			int is_new_line = 0;
+			int line1_indx = 0;
+			int line2_indx = 0;
+
+			for (uint32_t i = 0; i < rx_len; ++i)
+			{
+				/* omit \r\n symbols */
+				if (user_rx_buffer[i] == '\r' || user_rx_buffer[i] == '\n')
+				{
+					continue;
+				}
+
+				/* wait for the delimiter between lines */
+				if (user_rx_buffer[i] == APP_OLED_LINE_DELIMITER)
+				{
+					is_new_line = 1;
+					continue;
+				}
+
+				if (is_new_line)
+				{
+					line2[line2_indx++] = user_rx_buffer[i];
+				}
+				else
+				{
+					line1[line1_indx++] = user_rx_buffer[i];
+				}
+			}
+
+			ws0010_clear(&oled_dev);
+
+			ws0010_set_ddram_addr(&oled_dev, 0x00);
+			ws0010_print(&oled_dev, line1, line1_indx);
+
+			ws0010_set_ddram_addr(&oled_dev, 0x40);
+			ws0010_print(&oled_dev, line2, line2_indx);
 		}
 	}
 }
