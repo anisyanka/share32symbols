@@ -3,6 +3,6 @@
 This code parse donate messages from Donation Alert service
 and print your donate message to my OLED display
 
-Steam link: https://www.youtube.com/watch?v=6L4CiEaLvzk&ab_channel=anisyanka
+Stream link: https://www.youtube.com/watch?v=-ekq3e7EAH8&ab_channel=anisyanka
 
 ![](Docs/background.jpg)
