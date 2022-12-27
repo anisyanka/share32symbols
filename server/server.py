@@ -103,7 +103,7 @@ def send_oled_data(oled_msg):
 
 def print_default_text():
 	line1_def_text = "Share 32 symbols"
-	line2_def_text = "    *(^-^)*    "
+	line2_def_text = "     (^-^)      "
 
 	send_oled_data(OLED_Message("no", line1_def_text, line2_def_text, 1, "no", "no"))
 
