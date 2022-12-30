@@ -60,7 +60,8 @@ def handler(event):
 			lifetime = DEFAULT_LIFETIME_SEC
 		else:
 			# so many rubles, so many seconds on OLED
-			lifetime = int(event.amount_main)
+			#lifetime = int(event.amount_main)
+			lifetime = DEFAULT_LIFETIME_SEC
 	except ValueError:
 		print("[ERROR]: can't convert received string to int value")
 		put_msg_to_errfile(OLED_Message(username, line1, line2, 0, currency, rubles))
@@ -141,6 +142,7 @@ while True:
 		print("Lifetime exceeded")
 
 		if q.empty() == True:
-			print_default_text()
+			pass
+			#print_default_text()
 
 	q.task_done()
