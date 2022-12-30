@@ -5,6 +5,7 @@
 #include "ws0010.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 uint8_t ok_ans[] = { 'O', 'K' };
@@ -88,10 +89,10 @@ int main(void)
 	ws0010_init(&oled_dev);
 
 	ws0010_set_ddram_addr(&oled_dev, 0);
-	ws0010_print(&oled_dev, line1, sizeof(line1) - 1);
+	ws0010_print(&oled_dev, line1, strlen(line1));
 
 	ws0010_set_ddram_addr(&oled_dev, 0x40);
-	ws0010_print(&oled_dev, line2, sizeof(line2) - 1);
+	ws0010_print(&oled_dev, line2, strlen(line2));
 
 	while (1)
 	{
