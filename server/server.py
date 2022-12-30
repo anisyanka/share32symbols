@@ -8,7 +8,7 @@ from donation_alert import DA_Alert
 from dataclasses import dataclass
 
 SERIAL_PORT = '/dev/tty.usbmodem48F256B635381'
-DEFAULT_LIFETIME_SEC = 10 # A message will be displayed on OLED during these seconds
+DEFAULT_LIFETIME_SEC = 15 # A message will be displayed on OLED during these seconds
 MIN_DONATE_IN_RUB_TO_INCREASE_TIME = 10
 OLED_DEVICE_MAX_ANS_BYTES = 2
 WRITE_ATTEMPTS = 5
