@@ -38,7 +38,16 @@ def handler(event):
 	print(f'\n\n[NEW DONATION]\nUser:{event.username}\nValue:{event.amount}\nCurrency:{event.currency}\nMessage:{event.message}')
 
 	if event.currency != 'RUB':
-		pass # convert currency to RUB
+		if event.currency == 'USD':
+			rubles = 69 * event.amount;
+		if event.currency == 'EUR':
+			rubles = 73 * event.amount;
+		if event.currency == 'PLN':
+			rubles = 16 * event.amount;
+		if event.currency == 'TRY':
+			rubles = 4 * event.amount;
+		if event.currency == 'BRL':
+			rubles = 13 * event.amount;
 
 	username = event.username
 	line1 = event.message[:16]
