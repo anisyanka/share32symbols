@@ -7,7 +7,7 @@
 
 #include "usbd_cdc.h"
 
-#define APP_OLED_LINE_DELIMITER '\0'
+#define APP_OLED_LINE_DELIMITER '\n'
 #define APP_USER_RX_BUFFER_SIZE 128
 
 /* Define size for the receive and transmit buffer over CDC */

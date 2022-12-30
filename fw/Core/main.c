@@ -83,8 +83,8 @@ int main(void)
 	oled_ll_func.set_e = oled_set_e;
 	oled_ll_func.reset_e = oled_reset_e;
 
-	char line1[64] = "Share 32 symbols";
-	char line2[64] = "    *(^-^)*     ";
+	char line1[APP_USER_RX_BUFFER_SIZE] = "Share 32 symbols";
+	char line2[APP_USER_RX_BUFFER_SIZE] = "     (^-^)/     ";
 
 	ws0010_init(&oled_dev);
 
@@ -107,12 +107,6 @@ int main(void)
 
 			for (uint32_t i = 0; i < rx_len; ++i)
 			{
-				/* omit \r\n symbols */
-				if (user_rx_buffer[i] == '\r' || user_rx_buffer[i] == '\n')
-				{
-					continue;
-				}
-
 				/* wait for the delimiter between lines */
 				if (user_rx_buffer[i] == APP_OLED_LINE_DELIMITER)
 				{
@@ -131,6 +125,7 @@ int main(void)
 			}
 
 			ws0010_clear(&oled_dev);
+			ws0010_home(&oled_dev);
 
 			ws0010_set_ddram_addr(&oled_dev, 0x00);
 			ws0010_print(&oled_dev, line1, line1_indx);

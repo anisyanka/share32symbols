@@ -12,7 +12,6 @@ DEFAULT_LIFETIME_SEC = 10 # A message will be displayed on OLED during these sec
 MIN_DONATE_IN_RUB_TO_INCREASE_TIME = 10
 OLED_DEVICE_MAX_ANS_BYTES = 2
 WRITE_ATTEMPTS = 5
-DELIMITER_SYMBOL = '\0'
 
 # The queue of OLED messages
 q = queue.Queue()
@@ -21,8 +20,7 @@ q = queue.Queue()
 class OLED_Message:
 
 	username: str # author of a donation
-	line1: str # 16 symbols for line 1
-	line2: str # 16 symbols for line 2
+	text: str # text to show on OLED
 	lifetime: int # time in sec in during which the lines will be displayed
 	currency: str # currency of a donation
 	rubles: str # used to save failed donation
@@ -37,44 +35,19 @@ alert = DA_Alert(data["user_token"])
 def handler(event):
 	print(f'\n\n[NEW DONATION]\nUser:{event.username}\nValue:{event.amount}\nCurrency:{event.currency}\nMessage:{event.message}')
 
-	if event.currency != 'RUB':
-		if event.currency == 'USD':
-			rubles = 69 * event.amount;
-		if event.currency == 'EUR':
-			rubles = 73 * event.amount;
-		if event.currency == 'PLN':
-			rubles = 16 * event.amount;
-		if event.currency == 'TRY':
-			rubles = 4 * event.amount;
-		if event.currency == 'BRL':
-			rubles = 13 * event.amount;
-
 	username = event.username
-	line1 = event.message[:16]
-	line2 = event.message[16:32]
+	text = event.message
 	currency = event.currency
+	lifetime = DEFAULT_LIFETIME_SEC
 	rubles = event.amount
 
-	try:
-		if int(event.amount_main) < MIN_DONATE_IN_RUB_TO_INCREASE_TIME:
-			lifetime = DEFAULT_LIFETIME_SEC
-		else:
-			# so many rubles, so many seconds on OLED
-			#lifetime = int(event.amount_main)
-			lifetime = DEFAULT_LIFETIME_SEC
-	except ValueError:
-		print("[ERROR]: can't convert received string to int value")
-		put_msg_to_errfile(OLED_Message(username, line1, line2, 0, currency, rubles))
-		return
-
-	q.put(OLED_Message(username, line1, line2, lifetime, currency, rubles))
+	q.put(OLED_Message(username, text, lifetime, currency, rubles))
 
 def put_msg_to_errfile(oled_msg):
 	# save failed_donations.json
 	failed_donate = {
 		"user": oled_msg.username,
-		"line1": oled_msg.line1,
-		"line2": oled_msg.line2,
+		"text": oled_msg.text,
 		"currency": oled_msg.currency,
 		"lifetime": oled_msg.lifetime,
 		"rubles": oled_msg.rubles
@@ -84,7 +57,6 @@ def put_msg_to_errfile(oled_msg):
 		json.dump(failed_donate, file)
 		file.write('\n')
 
-
 def send_oled_data(oled_msg):
 	ans = "FAIL"
 
@@ -92,10 +64,11 @@ def send_oled_data(oled_msg):
 		s = serial.Serial(SERIAL_PORT, timeout = 1)
 
 		if s.is_open == True:
-			to_oled = oled_msg.line1 + DELIMITER_SYMBOL + oled_msg.line2
-			print(f"Sending data <{to_oled}> to port named: {s.name}\n")
-			print(f"LINE1: {oled_msg.line1.encode('utf-8')}")
-			print(f"LINE2: {oled_msg.line2.encode('utf-8')}")
+			# omit space symbols
+			to_oled = oled_msg.text.rstrip().replace("\r", "").replace("\t", "").replace("\f", "").replace("\v", "")
+			first_line, sep , second_line = to_oled.partition('\n')
+			print(f"LINE-1: <{first_line.encode('UTF-8')}>\nSEP: <{sep.encode('UTF-8')}>\nLINE-2: <{second_line.encode('UTF-8')}>\nDATA-LEN: {len(to_oled.encode('utf-8'))}")
+
 			s.write(bytes(to_oled,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
@@ -112,10 +85,8 @@ def send_oled_data(oled_msg):
 	return ans
 
 def print_default_text():
-	line1_def_text = "Share 32 symbols"
-	line2_def_text = "     (^-^)      "
-
-	send_oled_data(OLED_Message("no", line1_def_text, line2_def_text, 1, "no", "no"))
+	def_text = "Share 32 symbols" + "\n" + "     (^-^)/     "
+	send_oled_data(OLED_Message("no", def_text, 1, "no", "no"))
 
 print_default_text()
 
@@ -132,7 +103,7 @@ while True:
 			print("SUCCESS")
 			break
 		else:
-			print(f'[ERROR]: can not send these data to OLED:\n1: {item.line1}\n2: {item.line2}\nAttempts №{i + 1}')
+			print(f'[ERROR]: can not send these data to OLED:\n{item.text}\nAttempts №{i + 1}')
 			if i + 1 == WRITE_ATTEMPTS:
 				is_sleep_need = False
 				put_msg_to_errfile(item)
@@ -140,9 +111,5 @@ while True:
 	if is_sleep_need == True:
 		time.sleep(item.lifetime)
 		print("Lifetime exceeded")
-
-		if q.empty() == True:
-			pass
-			#print_default_text()
 
 	q.task_done()
