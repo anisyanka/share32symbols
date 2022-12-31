@@ -85,6 +85,8 @@ int main(void)
 
 	char line1[APP_USER_RX_BUFFER_SIZE] = { 0 };
 	char line2[APP_USER_RX_BUFFER_SIZE] = { 0 };
+	int scroll_cycle = 0;
+	int wait_cycle = 0;
 
 	ws0010_init(&oled_dev);
 	ws0010_home(&oled_dev);
@@ -128,10 +130,27 @@ int main(void)
 			ws0010_set_ddram_addr(&oled_dev, 0x40);
 			ws0010_print(&oled_dev, line2, line2_indx);
 			HAL_Delay(3000);
+
+			scroll_cycle = 0;
+			wait_cycle = 0;
 		}
 
-		ws0010_scroll_display_left(&oled_dev);
-		HAL_Delay(80);
+		if (scroll_cycle <= oled_dev.max_symbols_per_line - 1)
+		{
+			ws0010_scroll_display_left(&oled_dev);
+			++scroll_cycle;
+		}
+		else
+		{
+			++wait_cycle;
+
+			if (wait_cycle == 36) // drop hardcode later
+			{
+				wait_cycle = 0;
+				scroll_cycle = 0;
+			}
+		}
+		HAL_Delay(100);
 	}
 }
 
