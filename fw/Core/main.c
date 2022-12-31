@@ -132,7 +132,7 @@ int main(void)
 
 			ws0010_set_ddram_addr(&oled_dev, 0x40);
 			ws0010_print(&oled_dev, line2, line2_indx);
-			HAL_Delay(5000);
+			HAL_Delay(3000);
 		}
 
 		ws0010_scroll_display_left(&oled_dev);
