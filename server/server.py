@@ -13,6 +13,12 @@ MIN_DONATE_IN_RUB_TO_INCREASE_TIME = 10
 OLED_DEVICE_MAX_ANS_BYTES = 2
 WRITE_ATTEMPTS = 5
 
+MAX_SYMBOL_PER_LINE = 64
+MAX_VISIBLE_SYMBOLS_PER_LINE = 16
+MAX_SCROLLED_SYMBOLS_PER_LINE = 54
+LAST_BYTE = '\a'
+LINE_SEPARATOR = '\n'
+
 # The queue of OLED messages
 q = queue.Queue()
 
@@ -66,10 +72,39 @@ def send_oled_data(oled_msg):
 		if s.is_open == True:
 			# omit space symbols
 			to_oled = oled_msg.text.rstrip().replace("\r", "").replace("\t", "").replace("\f", "").replace("\v", "")
-			first_line, sep , second_line = to_oled.partition('\n')
+			first_line, sep , second_line = to_oled.partition(LINE_SEPARATOR)
+
+			# limit second line because still there is no code to handle that
+			second_line = second_line[0:MAX_SYMBOL_PER_LINE]
+
 			print(f"LINE-1: <{first_line.encode('UTF-8')}>\nSEP: <{sep.encode('UTF-8')}>\nLINE-2: <{second_line.encode('UTF-8')}>\nDATA-LEN: {len(to_oled.encode('utf-8'))}")
 
-			s.write(bytes(to_oled,'UTF-8'))
+			to_oled_list = to_oled.split()
+			word_cnt = 0
+			whole_words = ""
+
+			if len(first_line) >= MAX_SCROLLED_SYMBOLS_PER_LINE:
+				while len(whole_words) <= MAX_SCROLLED_SYMBOLS_PER_LINE:
+					temp = whole_words
+					temp += to_oled_list[word_cnt]
+					if len(temp) >= MAX_SCROLLED_SYMBOLS_PER_LINE:
+						whole_words = whole_words.rstrip()
+						break
+					word_cnt += 1
+					whole_words = temp + " "
+
+				first_line = whole_words
+
+				second_line = ""
+				for i, item in enumerate(to_oled_list):
+					if i < word_cnt:
+						continue
+					second_line += item + " "
+
+				second_line = (" " * (MAX_SCROLLED_SYMBOLS_PER_LINE - len(second_line))) + second_line;
+				to_oled = first_line.rstrip() + LINE_SEPARATOR + second_line.rstrip()
+
+			s.write(bytes(to_oled + LAST_BYTE,'UTF-8'))
 			s.flush()
 			ans = s.read(OLED_DEVICE_MAX_ANS_BYTES)
 			print(f'OLED device ans: {ans}')
