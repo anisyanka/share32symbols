@@ -83,16 +83,11 @@ int main(void)
 	oled_ll_func.set_e = oled_set_e;
 	oled_ll_func.reset_e = oled_reset_e;
 
-	char line1[APP_USER_RX_BUFFER_SIZE] = "Share 32 symbols";
-	char line2[APP_USER_RX_BUFFER_SIZE] = "     (^-^)/     ";
+	char line1[APP_USER_RX_BUFFER_SIZE] = { 0 };
+	char line2[APP_USER_RX_BUFFER_SIZE] = { 0 };
 
 	ws0010_init(&oled_dev);
-
-	ws0010_set_ddram_addr(&oled_dev, 0);
-	ws0010_print(&oled_dev, line1, strlen(line1));
-
-	ws0010_set_ddram_addr(&oled_dev, 0x40);
-	ws0010_print(&oled_dev, line2, strlen(line2));
+	ws0010_home(&oled_dev);
 
 	while (1)
 	{

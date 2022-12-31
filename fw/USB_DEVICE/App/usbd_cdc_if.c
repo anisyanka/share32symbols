@@ -129,15 +129,29 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
+	static size_t current_received_bytes = 0;
+	int is_last_byte = 0;
+
 	if (*Len <= APP_USER_RX_BUFFER_SIZE)
 	{
-		rx_len = *Len;
 		for (uint32_t i = 0; i < *Len; i++)
 		{
-			user_rx_buffer[i] = Buf[i];
+			user_rx_buffer[i + current_received_bytes] = Buf[i];
+
+			if (user_rx_buffer[i + current_received_bytes] == APP_OLED_LAST_BYTE_SYMB)
+			{
+				is_last_byte = 1;
+			}
 		}
 
-		is_package_received = true;
+		current_received_bytes += *Len;
+
+		if (is_last_byte)
+		{
+			rx_len = current_received_bytes;
+			current_received_bytes = 0;
+			is_package_received = true;
+		}
 	}
 	else
 	{
