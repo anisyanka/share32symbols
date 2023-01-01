@@ -148,7 +148,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
 		if (is_last_byte)
 		{
-			rx_len = current_received_bytes;
+			rx_len = current_received_bytes - 1; // without last byte symbol
 			current_received_bytes = 0;
 			is_package_received = true;
 		}
