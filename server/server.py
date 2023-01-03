@@ -17,7 +17,7 @@ MAX_SYMBOL_PER_LINE = 64
 MAX_VISIBLE_SYMBOLS_PER_LINE = 16
 MAX_SCROLLED_SYMBOLS_PER_LINE = 54
 LAST_BYTE = '\a'
-LINE_SEPARATOR = '\n'
+LINE_SEPARATOR = '&'
 
 # The queue of OLED messages
 q = queue.Queue()
@@ -120,7 +120,7 @@ def send_oled_data(oled_msg):
 	return ans
 
 def print_default_text():
-	def_text = "Share 32 symbols" + "\n" + "     (^-^)/     "
+	def_text = "Share 32 symbols" + LINE_SEPARATOR + "     (^-^)/     "
 	send_oled_data(OLED_Message("no", def_text, 1, "no", "no"))
 
 print_default_text()

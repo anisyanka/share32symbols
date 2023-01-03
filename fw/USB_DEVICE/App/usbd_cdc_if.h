@@ -7,7 +7,7 @@
 
 #include "usbd_cdc.h"
 
-#define APP_OLED_LINE_DELIMITER '\n'
+#define APP_OLED_LINE_DELIMITER '&'
 #define APP_OLED_LAST_BYTE_SYMB '\a'
 #define APP_USER_RX_BUFFER_SIZE 256
 
